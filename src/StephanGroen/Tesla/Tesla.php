@@ -21,11 +21,17 @@ class Tesla
 
     public function allData() : array
     {
-        return $this->sendRequest('/data')['response'];
+        return $this->sendRequest('/vehicle_data')['response'];
     }
+
     public function vehicles()
     {
         return $this->sendRequest('/vehicles');
+    }
+
+    public function vehicle()
+    {
+        return $this->sendRequest('')['response'];
     }
 
     public function setVehicleId(int $vehicleId)
@@ -71,6 +77,11 @@ class Tesla
     public function vehicleState() : array
     {
         return $this->sendRequest('/data_request/vehicle_state')['response'];
+    }
+
+    public function vehicleConfig() : array
+    {
+        return $this->sendRequest('/data_request/vehicle_config')['response'];
     }
 
     public function wakeUp() : array
@@ -174,6 +185,19 @@ class Tesla
     public function openTrunk() : array
     {
         return $this->sendRequest('/command/trunk_open?which_trunk=rear', [], 'POST')['response'];
+    }
+
+    public function setNavigation(string $location) : array
+    {
+        $params = [
+            'type' => 'share_ext_content_raw',
+            'value' => [
+                'android.intent.extra.TEXT' => $location
+            ],
+            'locale' => 'en-US',
+            'timestamp_ms' => time(),
+        ];
+        return $this->sendRequest('/command/navigation_request', $params, 'POST')['response'];
     }
 
     public function getAccessToken(string $username, string $password)
